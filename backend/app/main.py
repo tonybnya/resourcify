@@ -17,3 +17,13 @@ Base.metadata.create_all(bind=engine)
 
 # Include routes
 app.include_router(resources.router)
+
+
+@app.get("/", tags=["Root"])
+def root_info():
+    return {
+        "message": "Welcome to Resourcify API 🎉",
+        "versioned_entry": "/api/v1/resources",
+        "interactive docs": "/docs",
+        "alternative docs": "/redoc",
+    }

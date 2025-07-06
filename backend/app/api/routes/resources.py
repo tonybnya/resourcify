@@ -1,43 +1,33 @@
 """
 Script Name : resources.py
-Description : Defines the CRUD API endpoints for managing developer resources.
-Usage       : python3 resources.py [args]
+Description : Defines the versioned CRUD API endpoints for managing developer resources.
+Prefix      : /api/v1/resources
 Author      : @tonybnya
 """
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app.core.database import SessionLocal
+from app.core.database import get_db
 from app.models.resource import Resource
 from app.schemas.resource import ResourceCreate, ResourceOut, ResourceUpdate
 
-router = APIRouter(prefix="/resources", tags=["Resources"])
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+router = APIRouter(prefix="/api/v1/resources", tags=["Resources"])
 
 
 @router.get("/", tags=["Root"])
-def read_root():
+def api_info():
     return {
         "name": "Resourcify API",
         "version": "1.0.0",
-        "description": "Welcome to the Resourcify API 👋. Use this service to create, read, update, and delete curated developer resources.",
-        "endpoints": {
-            "List all resources": "GET /resources",
-            "Get a resource": "GET /resources/{resource_id}",
-            "Create a resource": "POST /resources",
-            "Update a resource": "PUT /resources/{resource_id}",
-            "Delete a resource": "DELETE /resources/{resource_id}",
-        },
-        "docs_url": "/docs",
-        "redoc_url": "/redoc"
+        "description": "Welcome to the Resourcify API 👋. Use this service to manage curated developer resources.",
+        "routes": {
+            "List all resources": "GET /api/v1/resources",
+            "Get a resource": "GET /api/v1/resources/{resource_id}",
+            "Create a resource": "POST /api/v1/resources",
+            "Update a resource": "PUT /api/v1/resources/{resource_id}",
+            "Delete a resource": "DELETE /api/v1/resources/{resource_id}",
+        }
     }
 
 
@@ -50,17 +40,17 @@ def create_resource(resource: ResourceCreate, db: Session = Depends(get_db)):
     return db_resource
 
 
-@router.get("/", response_model=list[ResourceOut])
+@router.get("/all", response_model=list[ResourceOut])
 def read_resources(db: Session = Depends(get_db)):
     return db.query(Resource).all()
 
 
 @router.get("/{resource_id}", response_model=ResourceOut)
 def read_resource(resource_id: int, db: Session = Depends(get_db)):
-    res = db.query(Resource).filter(Resource.id == resource_id).first()
-    if not res:
+    resource = db.query(Resource).filter(Resource.id == resource_id).first()
+    if not resource:
         raise HTTPException(status_code=404, detail="Resource not found")
-    return res
+    return resource
 
 
 @router.put("/{resource_id}", response_model=ResourceOut)
@@ -82,4 +72,4 @@ def delete_resource(resource_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Resource not found")
     db.delete(resource)
     db.commit()
-    return {"detail": "Resource deleted"}
+    return {"detail": f"Resource with ID {resource_id} deleted successfully."}

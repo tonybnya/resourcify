@@ -7,12 +7,12 @@ Author      : @tonybnya
 
 from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class ResourceBase(BaseModel):
     name: str
-    category: Optional[str] = None  # formerly 'type'
+    category: Optional[str] = None
     platform: Optional[str] = None
     cost: Optional[str] = None
     description: Optional[str] = None
@@ -30,5 +30,4 @@ class ResourceUpdate(ResourceBase):
 class ResourceOut(ResourceBase):
     id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
