@@ -1,14 +1,19 @@
 """
 Script Name : main.py
-Description : Describe what this script does
+Description : Bootstraps the FastAPI app, connects routes, and initializes the database.
 Usage       : python3 main.py [args]
 Author      : @tonybnya
 """
 
+from fastapi import FastAPI
 
-def main():
-    pass
+from app.api.routes import resources
+from app.core.database import Base, engine
 
+app = FastAPI(title="Resourcify API")
 
-if __name__ == "__main__":
-    main()
+# Create database tables
+Base.metadata.create_all(bind=engine)
+
+# Include routes
+app.include_router(resources.router)
