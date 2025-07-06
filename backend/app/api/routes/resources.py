@@ -23,6 +23,24 @@ def get_db():
         db.close()
 
 
+@router.get("/", tags=["Root"])
+def read_root():
+    return {
+        "name": "Resourcify API",
+        "version": "1.0.0",
+        "description": "Welcome to the Resourcify API 👋. Use this service to create, read, update, and delete curated developer resources.",
+        "endpoints": {
+            "List all resources": "GET /resources",
+            "Get a resource": "GET /resources/{resource_id}",
+            "Create a resource": "POST /resources",
+            "Update a resource": "PUT /resources/{resource_id}",
+            "Delete a resource": "DELETE /resources/{resource_id}",
+        },
+        "docs_url": "/docs",
+        "redoc_url": "/redoc"
+    }
+
+
 @router.post("/", response_model=ResourceOut)
 def create_resource(resource: ResourceCreate, db: Session = Depends(get_db)):
     db_resource = Resource(**resource.dict())
