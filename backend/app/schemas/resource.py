@@ -5,18 +5,18 @@ Usage       : python3 resource.py [args]
 Author      : @tonybnya
 """
 
-from typing import Optional
+from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class ResourceBase(BaseModel):
     name: str
-    type: Optional[str] = None
+    category: Optional[str] = None  # formerly 'type'
     platform: Optional[str] = None
     cost: Optional[str] = None
     description: Optional[str] = None
-    tags: Optional[str] = None  # store as "tag1,tag2"
+    tags: Optional[List[str]] = []
 
 
 class ResourceCreate(ResourceBase):
@@ -28,7 +28,8 @@ class ResourceUpdate(ResourceBase):
 
 
 class ResourceOut(ResourceBase):
-    id: int
+    _id: int = Field(..., alias="resource_id")
 
     class Config:
         orm_mode = True
+        allow_population_by_field_name = True  # enables using '_id' in responses
