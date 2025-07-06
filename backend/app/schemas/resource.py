@@ -7,7 +7,7 @@ Author      : @tonybnya
 
 from typing import List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 class ResourceBase(BaseModel):
@@ -28,8 +28,7 @@ class ResourceUpdate(ResourceBase):
 
 
 class ResourceOut(ResourceBase):
-    _id: int = Field(..., alias="resource_id")
+    id: int
 
     class Config:
         orm_mode = True
-        allow_population_by_field_name = True  # enables using '_id' in responses

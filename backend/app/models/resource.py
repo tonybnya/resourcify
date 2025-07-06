@@ -14,7 +14,7 @@ from app.core.database import Base
 class Resource(Base):
     __tablename__ = "resources"
 
-    _id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
     category = Column(String)
     platform = Column(String)
