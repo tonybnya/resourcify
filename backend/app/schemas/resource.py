@@ -12,6 +12,7 @@ from pydantic import BaseModel, ConfigDict
 
 class ResourceBase(BaseModel):
     name: str
+    url: Optional[str] = None
     category: Optional[str] = None
     platform: Optional[str] = None
     cost: Optional[str] = None

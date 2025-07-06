@@ -16,6 +16,7 @@ class Resource(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
+    url = Column(String)
     category = Column(String)
     platform = Column(String)
     cost = Column(String)
